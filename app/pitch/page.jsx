@@ -29,7 +29,7 @@ const IdeaToPPTConverter = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch("https://dba4-103-155-138-209.ngrok-free.app/generate", {
+            const response = await fetch("https://pitch-deck-foss.onrender.com/generate", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

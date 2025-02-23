@@ -11,12 +11,27 @@ import * as React from "react";
 import axios from "axios";
 import { ChartCandlestickIcon, Search } from "lucide-react";
 
+const INDUSTRY_ENDPOINT = 'https://industry-overview.onrender.com/generate_report';
+const COMPETITOR_ENDPOINT = 'categorize';
+
 const searchCategories = [
-    { name: "Industry overview", icon: ChartCandlestickIcon, placeholder: "Get information about industry...", endPoints: "https://dba4-103-155-138-209.ngrok-free.app/generate_report" },
-    { name: "Competitor analysis", icon: Search, placeholder: "Get information about competitors...", endPoints: "categorize" },
+    {
+        name: "Industry overview",
+        icon: ChartCandlestickIcon,
+        placeholder: "Get information about industry...",
+        endPoint: INDUSTRY_ENDPOINT
+    },
+    {
+        name: "Competitor analysis",
+        icon: Search,
+        placeholder: "Get information about competitors...",
+        endPoint: COMPETITOR_ENDPOINT
+    },
 ];
 
 function parseTextToCleanList(text) {
+    if (!text) return [];
+
     const sections = text.split(/\d+\./g).filter(section => section.trim() !== '');
 
     const cleanedList = sections.map(section => {
@@ -37,15 +52,20 @@ export default function Home() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!query.trim()) return;
+        const trimmedQuery = query.trim();
+
+        if (!trimmedQuery) {
+            setErrorMessage("Please enter a search query");
+            return;
+        }
 
         setLoading(true);
         setErrorMessage("");
 
         try {
             const { data } = await axios.post(
-                activeCategory.endPoints,
-                { query },
+                activeCategory.endPoint,
+                { query: trimmedQuery },
                 {
                     headers: {
                         "Content-Type": "application/json",
@@ -54,28 +74,57 @@ export default function Home() {
                 }
             );
 
-            const parsedData = activeCategory.endPoints === 'https://dba4-103-155-138-209.ngrok-free.app/generate_report' ? Object.fromEntries(Object.entries(data).map(([key, value]) => [key, parseTextToCleanList(value)])) : data;
+            // Process data based on endpoint type
+            const processedData = activeCategory.endPoint === INDUSTRY_ENDPOINT
+                ? Object.fromEntries(
+                    Object.entries(data).map(([key, value]) => [
+                        key,
+                        typeof value === 'string' ? parseTextToCleanList(value) : value
+                    ])
+                )
+                : data;
+
             setContentData(prev => ({
                 ...prev,
-                [activeCategory.endPoints]: parsedData
+                [activeCategory.endPoint]: processedData
             }));
         } catch (error) {
-            if (error.response) setErrorMessage(`Server Error: ${error.response.data.message || "Unknown error"}`)
-            else if (error.request) setErrorMessage("Network Error: No response from the server. Check your connection.");
-            else setErrorMessage(`Error: ${error.message}`);
+            console.error('API Error:', error);
+            if (error.response) {
+                setErrorMessage(`Server Error: ${error.response.data.message || "An unknown error occurred"}`);
+            } else if (error.request) {
+                setErrorMessage("Network Error: Unable to reach the server. Please check your connection.");
+            } else {
+                setErrorMessage(`Error: ${error.message || "An unexpected error occurred"}`);
+            }
         } finally {
             setLoading(false);
         }
     };
 
-    // Dynamic content renderer
-    const renderContent = () => {
-        if (!contentData[activeCategory.endPoints]) return null;
+    // Reset error message when changing categories or query
+    React.useEffect(() => {
+        setErrorMessage("");
+    }, [activeCategory, query]);
 
-        return activeCategory.endPoints === 'generate_report' ? (
-            <Market data={contentData.generate_report} />
+    // Clear content when changing categories
+    React.useEffect(() => {
+        setQuery("");
+        setContentData(prev => ({
+            ...prev,
+            [activeCategory.endPoint]: null
+        }));
+    }, [activeCategory]);
+
+    const renderContent = () => {
+        const currentData = contentData[activeCategory.endPoint];
+
+        if (!currentData) return null;
+
+        return activeCategory.endPoint === INDUSTRY_ENDPOINT ? (
+            <Market data={currentData} />
         ) : (
-            <Competition data={contentData.categorize} />
+            <Competition data={currentData} />
         );
     };
 
@@ -84,6 +133,7 @@ export default function Home() {
             <main className="min-h-screen bg-background flex flex-col items-center p-4">
                 <div className="w-full max-w-3xl flex flex-col items-center justify-center">
                     <h1 className="text-2xl font-bold mb-4 text-center">Validate your Idea</h1>
+
                     <TopbarSearch
                         activeCategory={activeCategory}
                         setActiveCategory={setActiveCategory}
