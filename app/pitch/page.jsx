@@ -2,9 +2,10 @@
 import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Loader2, Download, Send, AlertCircle } from 'lucide-react';
+import { Loader2, Send, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Textarea } from '@/components/ui/textarea';
+import ProtectedRoute from '@/components/protected-route';
 
 const IdeaToPPTConverter = () => {
     const [ideaDescription, setIdeaDescription] = useState('');
@@ -61,75 +62,77 @@ const IdeaToPPTConverter = () => {
         }
     };
     return (
-        <div className="min-h-screen bg-gray-50 p-4 flex items-center justify-center">
-            <Card className="w-full max-w-2xl shadow-lg">
-                <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-center">
-                        Convert Your Idea to Presentation
-                    </CardTitle>
-                    <CardDescription className="text-center text-gray-600">
-                        Describe your idea in detail and we'll generate a professional presentation for you
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-2">
-                            <label
-                                htmlFor="idea"
-                                className="block text-sm font-medium text-gray-700"
-                            >
-                                Describe Your Idea
-                            </label>
-                            <Textarea
-                                id="idea"
-                                rows={8}
-                                className="resize-none"
-                                placeholder="Enter a detailed description of your idea..."
-                                value={ideaDescription}
-                                onChange={(e) => {
-                                    setIdeaDescription(e.target.value);
-                                    setError('');
-                                }}
-                            />
-                        </div>
+        <ProtectedRoute>
+            <div className="min-h-screen bg-gray-50 p-4 flex items-center justify-center">
+                <Card className="w-full max-w-2xl shadow-lg">
+                    <CardHeader>
+                        <CardTitle className="text-2xl font-bold text-center">
+                            Convert Your Idea to Presentation
+                        </CardTitle>
+                        <CardDescription className="text-center text-gray-600">
+                            Describe your idea in detail and we'll generate a professional presentation for you
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <label
+                                    htmlFor="idea"
+                                    className="block text-sm font-medium text-gray-700"
+                                >
+                                    Describe Your Idea
+                                </label>
+                                <Textarea
+                                    id="idea"
+                                    rows={8}
+                                    className="resize-none"
+                                    placeholder="Enter a detailed description of your idea..."
+                                    value={ideaDescription}
+                                    onChange={(e) => {
+                                        setIdeaDescription(e.target.value);
+                                        setError('');
+                                    }}
+                                />
+                            </div>
 
-                        {error && (
-                            <Alert variant="destructive">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertTitle>Error</AlertTitle>
-                                <AlertDescription>{error}</AlertDescription>
-                            </Alert>
-                        )}
+                            {error && (
+                                <Alert variant="destructive">
+                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertTitle>Error</AlertTitle>
+                                    <AlertDescription>{error}</AlertDescription>
+                                </Alert>
+                            )}
 
-                        {successMessage && (
-                            <Alert className="bg-green-50 text-green-800 border-green-200">
-                                <AlertDescription>{successMessage}</AlertDescription>
-                            </Alert>
-                        )}
+                            {successMessage && (
+                                <Alert className="bg-green-50 text-green-800 border-green-200">
+                                    <AlertDescription>{successMessage}</AlertDescription>
+                                </Alert>
+                            )}
 
-                        <div className="flex justify-center">
-                            <Button
-                                type="submit"
-                                disabled={isLoading}
-                                className="w-full sm:w-auto transition-all"
-                            >
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Generating Presentation...
-                                    </>
-                                ) : (
-                                    <>
-                                        <Send className="mr-2 h-4 w-4" />
-                                        Generate Presentation
-                                    </>
-                                )}
-                            </Button>
-                        </div>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
+                            <div className="flex justify-center">
+                                <Button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="w-full sm:w-auto transition-all"
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            Generating Presentation...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="mr-2 h-4 w-4" />
+                                            Generate Presentation
+                                        </>
+                                    )}
+                                </Button>
+                            </div>
+                        </form>
+                    </CardContent>
+                </Card>
+            </div>
+        </ProtectedRoute>
     );
 };
 

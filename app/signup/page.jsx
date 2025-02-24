@@ -31,7 +31,7 @@ export default function UserSignup() {
             const data = await res.json();
             if (res.ok) {
                 localStorage.setItem("token", data.token);
-                router.push("/home");
+                router.push("/industry");
             }
             else setMessage(data.error || "Signup failed.")
         } catch (error) {
@@ -52,7 +52,7 @@ export default function UserSignup() {
         <>
             <BackgroundBeamsWithCollision />
             <main className="bg-black min-h-screen flex items-center justify-center z-10">
-                <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-sm shadow-white z-10">
+                <div className="max-w-md w-full mx-auto rounded-3xl border-2 border-gray-50 border-opacity-30 md:rounded-2xl p-4 md:p-8  z-10">
                     <h2 className="font-bold text-neutral-200 text-xl">Welcome to Insightify</h2>
                     <form className="my-8 w-full flex items-center flex-col" onSubmit={handleSubmit}>
                         {fields.map(({ id, label, placeholder, type }) => (

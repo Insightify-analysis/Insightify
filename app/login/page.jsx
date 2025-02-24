@@ -33,7 +33,7 @@ export default function UserLogin() {
 
             if (res.ok) {
                 localStorage.setItem("token", data.token);
-                router.push("/home");
+                router.push("/industry");
             } else {
                 setMessage(data.error || "Login failed.");
             }
@@ -49,7 +49,7 @@ export default function UserLogin() {
         <>
             <BackgroundBeamsWithCollision />
             <main className="bg-black min-h-screen flex items-center justify-center z-10">
-                <div className="shadow-input mx-auto p-8 w-full max-w-md z-10 shadow-sm shadow-white">
+                <div className="mx-auto p-8 w-full max-w-md z-10 border-2 border-gray-50 border-opacity-40 rounded-3xl">
                     <h2 className="font-bold text-neutral-200 text-xl">Welcome Back to Insightify</h2>
                     <form className="my-8 w-full flex items-center flex-col" onSubmit={handleSubmit}>
                         <LabelInputContainer className="mb-4">
