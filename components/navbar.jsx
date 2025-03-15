@@ -20,7 +20,7 @@ export default function Navbar() {
                 <NavLink href="/competition">Competitor Analysis</NavLink>
                 <NavLink href="/pitch">Pitch Deck</NavLink>
                 <NavLink href="/community">Community</NavLink>
-                <NavLink href="/fun">Fun</NavLink>
+                <NavLink href="/speech">Speech</NavLink>
             </div>
 
             <div className="hidden md:flex items-center space-x-4">

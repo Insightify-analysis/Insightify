@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
-import { Progress } from '@/components/ui/progress';
 import {
     Mic,
     Play,
@@ -89,21 +88,19 @@ const Fun = () => {
             const response = await axios({
                 method: 'post',
                 url: 'http://localhost:5000/roast',
-                data: { query }, // Fixed: Changed 'idea' to 'query'
-                responseType: 'blob' // Fixed: Changed 'stream' to 'blob'
+                data: { query },
+                responseType: 'blob'
             });
 
             const audioBlob = new Blob([response.data], { type: 'audio/mpeg' });
             const url = URL.createObjectURL(audioBlob);
 
-            // Cleanup previous URL if it exists
             if (audioUrl) {
                 URL.revokeObjectURL(audioUrl);
             }
 
             setAudioUrl(url);
 
-            // Wait for audio to load before playing
             if (audioRef.current) {
                 audioRef.current.load();
                 audioRef.current.oncanplaythrough = () => {
@@ -159,7 +156,6 @@ const Fun = () => {
         }
     };
 
-    // Cleanup function for audio URL
     useEffect(() => {
         return () => {
             if (audioUrl) {
@@ -179,10 +175,10 @@ const Fun = () => {
                     {/* Header Section */}
                     <div className="text-center mb-12 space-y-4">
                         <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-                            Roast My Idea
+                            Give a speech for my Idea
                         </h1>
                         <p className="text-gray-300 text-lg">
-                            Get a funny roast of your idea in audio format. Just type in your idea and hit generate!
+                            Get a professional speech of your idea in audio format. Just type in your idea and hit generate!
                         </p>
                     </div>
 
