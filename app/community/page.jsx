@@ -2,10 +2,20 @@
 import { useState, useRef, useEffect } from 'react';
 
 const DiscordLikeChat = () => {
-    const [messages, setMessages] = useState([
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
+    const [currentUser] = useState({
+        name: 'Mudit',
+        avatar: 'https://i.pravatar.cc/100?u=jake',
+    });
+
+    const messagesEndRef = useRef(null);
+
+    // Initialize default messages if local storage is empty
+    const defaultMessages = [
         {
             id: 1,
-            author: 'Mohit',
+            author: 'Tushya',
             avatar: 'https://i.pravatar.cc/100?u=alex',
             content: 'Hey everyone! Welcome to our community chat 👋',
             timestamp: '2025-03-09T10:30:00Z',
@@ -27,19 +37,30 @@ const DiscordLikeChat = () => {
             timestamp: '2025-03-09T10:32:00Z',
             isBot: false,
         },
-    ]);
+    ];
 
-    const [newMessage, setNewMessage] = useState('');
-    const [currentUser] = useState({
-        name: 'Current User',
-        avatar: 'https://i.pravatar.cc/100?u=current',
-    });
-
-    const messagesEndRef = useRef(null);
+    // Load messages from local storage on component mount
+    useEffect(() => {
+        const storedMessages = localStorage.getItem('chatMessages');
+        if (storedMessages) {
+            setMessages(JSON.parse(storedMessages));
+        } else {
+            // If no stored messages, use default ones and save them
+            setMessages(defaultMessages);
+            localStorage.setItem('chatMessages', JSON.stringify(defaultMessages));
+        }
+    }, []);
 
     // Auto-scroll to bottom on new messages
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages]);
+
+    // Save messages to local storage whenever they change
+    useEffect(() => {
+        if (messages.length > 0) {
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
     }, [messages]);
 
     const handleSendMessage = (e) => {
@@ -53,29 +74,23 @@ const DiscordLikeChat = () => {
             avatar: currentUser.avatar,
             content: newMessage,
             timestamp: new Date().toISOString(),
-            isBot: false,
+            isBot: true,
         };
 
         setMessages([...messages, message]);
         setNewMessage('');
-
-        // Simulate bot response
-        setTimeout(() => {
-            const botResponse = {
-                id: Date.now() + 1,
-                author: 'ChatBot',
-                avatar: 'https://i.pravatar.cc/100?u=bot',
-                content: `Thanks for your message, ${currentUser.name}!`,
-                timestamp: new Date().toISOString(),
-                isBot: true,
-            };
-            setMessages(prevMessages => [...prevMessages, botResponse]);
-        }, 1000);
     };
 
     const formatTimestamp = (timestamp) => {
         const date = new Date(timestamp);
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    // Function to clear chat history (for testing)
+    const clearChatHistory = () => {
+        localStorage.removeItem('chatMessages');
+        setMessages(defaultMessages);
+        localStorage.setItem('chatMessages', JSON.stringify(defaultMessages));
     };
 
     return (
@@ -85,7 +100,14 @@ const DiscordLikeChat = () => {
                 <div className="w-16 bg-gray-900 flex flex-col items-center py-4 space-y-4">
                     <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-xl font-bold">I</div>
                     <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-xl font-bold">+</div>
-                </div>  
+                    <button
+                        onClick={clearChatHistory}
+                        className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-xs font-bold mt-auto"
+                        title="Clear chat history"
+                    >
+                        Clear
+                    </button>
+                </div>
 
                 {/* Main Chat Area */}
                 <div className="flex-1 flex flex-col">
@@ -189,7 +211,7 @@ const DiscordLikeChat = () => {
                                 />
                                 <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-gray-800"></div>
                             </div>
-                            <span className="ml-2  text-green-400">Mudit</span>
+                            <span className="ml-2 text-green-400">Mudit</span>
                         </div>
                         <div className="flex items-center p-2 rounded hover:bg-gray-700 cursor-pointer">
                             <div className="relative">

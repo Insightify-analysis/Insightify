@@ -9,7 +9,12 @@ import { Document, Packer, Paragraph, TextRun } from 'docx';
 import * as React from "react";
 import axios from "axios";
 
-const capitalizeTitle = (str) => str.replace(/\b\w/g, (char) => char.toUpperCase());
+function capitalizeTitle(key) {
+    return key
+        .split('_')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
+}
 
 const projects = [];
 export default function Competition() {
@@ -68,7 +73,6 @@ export default function Competition() {
                 }
             );
             setContentData(data.result.ai_based.raw_market_data.related_companies);
-            console.log(contentData);
             for (let key in contentData) {
                 const newObject = {};
                 newObject.title = capitalizeTitle(key);

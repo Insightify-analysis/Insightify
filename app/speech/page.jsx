@@ -18,7 +18,7 @@ import {
     Share2
 } from 'lucide-react';
 
-const Fun = () => {
+const Speech = () => {
     const [query, setQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [audioUrl, setAudioUrl] = useState('');
@@ -62,14 +62,13 @@ const Fun = () => {
     };
 
     const updateVisualizer = () => {
-        if (!analyserRef.current) return;
-
+        if (!isPlaying || !analyserRef.current) return;
         const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
         analyserRef.current.getByteFrequencyData(dataArray);
         setVisualizerData(Array.from(dataArray));
-
         animationFrameRef.current = requestAnimationFrame(updateVisualizer);
     };
+
 
     const formatTime = (time) => {
         if (!isFinite(time)) return "0:00";
@@ -87,8 +86,8 @@ const Fun = () => {
         try {
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:5000/roast',
-                data: { query },
+                url: 'https://voice-6sa5.onrender.com/roast',
+                data: { idea: query },
                 responseType: 'blob'
             });
 
@@ -102,13 +101,13 @@ const Fun = () => {
             setAudioUrl(url);
 
             if (audioRef.current) {
+                audioRef.current.src = url;
                 audioRef.current.load();
-                audioRef.current.oncanplaythrough = () => {
-                    audioRef.current.play();
+                audioRef.current.play().then(() => {
                     setIsPlaying(true);
                     setupAudioContext();
                     updateVisualizer();
-                };
+                }).catch(console.error);
             }
         } catch (error) {
             console.error('Error fetching audio:', error);
@@ -165,19 +164,18 @@ const Fun = () => {
     }, [audioUrl]);
 
     return (
-        <div className="min-h-screen bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-indigo-900 via-purple-900 to-pink-900 p-8 flex flex-col items-center justify-center">
-            <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
+        <div className="min-h-screen p-8 flex flex-col items-center justify-center">
+            <div className="absolute inset-0 backdrop-blur-[2px]" />
 
-            <Card className="relative w-full max-w-3xl bg-black/40 backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/10" />
+            <Card className="relative w-full max-w-3xl bg-black backdrop-blur-xl border border-white/10 shadow-2xl overflow-hidden">
 
                 <CardContent className="p-10 relative">
                     {/* Header Section */}
                     <div className="text-center mb-12 space-y-4">
-                        <h1 className="text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
+                        <h1 className="text-5xl font-bold text-cyan-500">
                             Give a speech for my Idea
                         </h1>
-                        <p className="text-gray-300 text-lg">
+                        <p className="text-white text-lg">
                             Get a professional speech of your idea in audio format. Just type in your idea and hit generate!
                         </p>
                     </div>
@@ -185,21 +183,20 @@ const Fun = () => {
                     {/* Input Section */}
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="relative group">
-                            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200" />
-                            <Input
-                                type="text"
+                            <textarea
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                className="relative w-full bg-black/50 border-2 border-purple-500/30 text-white placeholder-gray-400 focus:border-purple-500 text-lg py-6 px-4 rounded-lg transition-all duration-300"
+                                className="relative w-full bg-white text-black placeholder-gray-900 text-lg py-6 px-4 rounded-lg transition-all duration-300 resize-none"
                                 placeholder="Type your idea here..."
+                                rows={2}
                             />
-                            <Mic className="absolute right-4 top-1/2 transform -translate-y-1/2 text-purple-400 animate-pulse" />
+                            <Mic className="absolute right-4 top-1/2 transform -translate-y-1/2 animate-pulse" />
                         </div>
 
                         <Button
                             type="submit"
                             disabled={isLoading || !query.trim()}
-                            className={`w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transform transition-all duration-300 py-6 text-lg font-semibold rounded-lg ${isLoading ? 'animate-pulse' : ''}`}
+                            className={`w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 transform transition-all duration-300 py-6 text-lg font-semibold rounded-lg ${isLoading ? 'animate-pulse' : ''}`}
                         >
                             {isLoading ? (
                                 <div className="flex items-center space-x-2">
@@ -246,7 +243,7 @@ const Fun = () => {
                             </div>
 
                             {/* Controls */}
-                            <div className="flex items-center justify-center space-x-6">
+                            <div className="flex flex-wrap items-center justify-center space-x-3 sm:space-x-6 w-full">
                                 <Button
                                     onClick={skipBackward}
                                     className="bg-white/10 hover:bg-white/20 rounded-full w-12 h-12"
@@ -302,7 +299,7 @@ const Fun = () => {
                                     </Button>
                                     <Button
                                         onClick={() => {
-                                            navigator.clipboard.writeText(window.location.href);
+                                            navigator.clipboard.writeText(audioUrl);
                                         }}
                                         className="bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 p-0"
                                     >
@@ -326,4 +323,4 @@ const Fun = () => {
     );
 };
 
-export default Fun;
+export default Speech;
