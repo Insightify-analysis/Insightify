@@ -62,14 +62,13 @@ const IdeaToPPTConverter = () => {
         }
     };
     return (
-        <ProtectedRoute>
-            <div className="min-h-screen bg-gray-50 p-4 flex items-center justify-center">
-                <Card className="w-full max-w-2xl shadow-lg">
+            <div className="flex justify-center items-center bg-gray-50 p-4 min-h-screen">
+                <Card className="shadow-lg w-full max-w-2xl">
                     <CardHeader>
-                        <CardTitle className="text-2xl font-bold text-center">
+                        <CardTitle className="font-bold text-2xl text-center">
                             Convert Your Idea to Presentation
                         </CardTitle>
-                        <CardDescription className="text-center text-gray-600">
+                        <CardDescription className="text-gray-600 text-center">
                             Describe your idea in detail and we'll generate a professional presentation for you
                         </CardDescription>
                     </CardHeader>
@@ -78,7 +77,7 @@ const IdeaToPPTConverter = () => {
                             <div className="space-y-2">
                                 <label
                                     htmlFor="idea"
-                                    className="block text-sm font-medium text-gray-700"
+                                    className="block font-medium text-gray-700 text-sm"
                                 >
                                     Describe Your Idea
                                 </label>
@@ -97,14 +96,14 @@ const IdeaToPPTConverter = () => {
 
                             {error && (
                                 <Alert variant="destructive">
-                                    <AlertCircle className="h-4 w-4" />
+                                    <AlertCircle className="w-4 h-4" />
                                     <AlertTitle>Error</AlertTitle>
                                     <AlertDescription>{error}</AlertDescription>
                                 </Alert>
                             )}
 
                             {successMessage && (
-                                <Alert className="bg-green-50 text-green-800 border-green-200">
+                                <Alert className="bg-green-50 border-green-200 text-green-800">
                                     <AlertDescription>{successMessage}</AlertDescription>
                                 </Alert>
                             )}
@@ -117,12 +116,12 @@ const IdeaToPPTConverter = () => {
                                 >
                                     {isLoading ? (
                                         <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                            <Loader2 className="mr-2 w-4 h-4 animate-spin" />
                                             Generating Presentation...
                                         </>
                                     ) : (
                                         <>
-                                            <Send className="mr-2 h-4 w-4" />
+                                            <Send className="mr-2 w-4 h-4" />
                                             Generate Presentation
                                         </>
                                     )}
@@ -132,7 +131,6 @@ const IdeaToPPTConverter = () => {
                     </CardContent>
                 </Card>
             </div>
-        </ProtectedRoute>
     );
 };
 

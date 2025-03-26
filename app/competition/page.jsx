@@ -93,14 +93,13 @@ export default function Competition() {
         }
     };
     return (
-        <ProtectedRoute>
-            <main className="min-h-screen bg-background flex flex-col items-center p-4">
-                <div className="w-full max-w-5xl flex flex-col items-center justify-center">
-                    <h1 className="text-2xl font-bold mb-4 text-center">
+            <main className="flex flex-col items-center bg-background p-4 min-h-screen">
+                <div className="flex flex-col justify-center items-center w-full max-w-5xl">
+                    <h1 className="mb-4 font-bold text-2xl text-center">
                         Competitor Analysis
                     </h1>
 
-                    <form className="p-4 flex gap-2 w-full" onSubmit={handleSubmit}>
+                    <form className="flex gap-2 p-4 w-full" onSubmit={handleSubmit}>
                         <Input
                             type="search"
                             placeholder={"Search for competitors..."}
@@ -117,21 +116,21 @@ export default function Competition() {
                     )}
 
                     {errorMessage && (
-                        <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+                        <p className="mt-2 text-red-500 text-sm">{errorMessage}</p>
                     )}
 
                     {contentData.length > 0 && (
                         <button
                             type="button"
                             onClick={downloadDocx}
-                            className="mt-4 px-4 py-2 mb-5 bg-cyan-600 text-white rounded-lg hover:bg-black transition-all duration-200 ease-in-out"
+                            className="bg-cyan-600 hover:bg-black mt-4 mb-5 px-4 py-2 rounded-lg text-white transition-all duration-200 ease-in-out"
                         >
                             Download
                         </button>
                     )}
 
                     {contentData.length === 0 && !loading && (
-                        <div className="text-zinc-500 text-center py-8">
+                        <div className="py-8 text-zinc-500 text-center">
                             No competitor data found. Try a search!
                         </div>
                     )}
@@ -140,6 +139,5 @@ export default function Competition() {
                     </div>
                 </div>
             </main>
-        </ProtectedRoute>
     );
 }

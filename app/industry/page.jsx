@@ -104,14 +104,13 @@ export default function Industry() {
     };
 
     return (
-        <ProtectedRoute>
-            <main className="min-h-screen bg-background flex flex-col items-center p-4">
-                <div className="w-full max-w-3xl flex flex-col items-center justify-center">
-                    <h1 className="text-2xl font-bold mb-4 text-center">
+            <main className="flex flex-col items-center bg-background p-4 min-h-screen">
+                <div className="flex flex-col justify-center items-center w-full max-w-3xl">
+                    <h1 className="mb-4 font-bold text-2xl text-center">
                         Industry Overview
                     </h1>
 
-                    <form className="p-4 flex gap-2 w-full" onSubmit={handleSubmit}>
+                    <form className="flex gap-2 p-4 w-full" onSubmit={handleSubmit}>
                         <Input
                             type="search"
                             placeholder="Search for industry overview..."
@@ -128,31 +127,31 @@ export default function Industry() {
                     )}
 
                     {errorMessage && (
-                        <div className="text-red-500 text-sm mt-2">
+                        <div className="mt-2 text-red-500 text-sm">
                             {errorMessage}
                         </div>
                     )}
 
-                    <div className="w-full max-w-3xl mx-auto">
+                    <div className="mx-auto w-full max-w-3xl">
                         {contentData.length > 0 && (
                             <button
                                 type="button"
                                 onClick={downloadDocx}
-                                className="mt-4 px-4 py-2 mb-5 bg-cyan-600 text-white rounded-lg hover:bg-black transition-all duration-200 ease-in-out"
+                                className="bg-cyan-600 hover:bg-black mt-4 mb-5 px-4 py-2 rounded-lg text-white transition-all duration-200 ease-in-out"
                             >
                                 Download
                             </button>
                         )}
 
                         {contentData.length === 0 && !loading && (
-                            <div className="text-zinc-500 text-center py-8">
+                            <div className="py-8 text-zinc-500 text-center">
                                 No industry data found. Try a search!
                             </div>
                         )}
 
                         {contentData.length > 0 && (
                             <>
-                                <div className="mb-6 flex space-x-3">
+                                <div className="flex space-x-3 mb-6">
                                     {contentData.map((item, index) => (
                                         <button
                                             key={index}
@@ -167,7 +166,7 @@ export default function Industry() {
                                         </button>
                                     ))}
                                 </div>
-                                <div className="overflow-hidden border-t border-zinc-200 dark:border-zinc-700">
+                                <div className="border-zinc-200 dark:border-zinc-700 border-t overflow-hidden">
                                     <TransitionPanel
                                         activeIndex={activeIndex}
                                         transition={{ duration: 0.3, ease: 'easeInOut' }}
@@ -179,16 +178,16 @@ export default function Industry() {
                                     >
                                         {contentData.map((item, index) => (
                                             <div key={index} className="py-4">
-                                                <h3 className="mb-4 text-xl font-semibold text-zinc-800 dark:text-zinc-100">
+                                                <h3 className="mb-4 font-semibold text-zinc-800 dark:text-zinc-100 text-xl">
                                                     {item.subtitle}
                                                 </h3>
                                                 <ul className="space-y-3 text-zinc-600 dark:text-zinc-400">
                                                     {item.content.map((text, idx) => (
                                                         <li
                                                             key={idx}
-                                                            className="flex items-start space-x-3 rounded-lg p-3 transition-all duration-200 hover:bg-zinc-50 dark:hover:bg-zinc-800"
+                                                            className="flex items-start space-x-3 hover:bg-zinc-50 dark:hover:bg-zinc-800 p-3 rounded-lg transition-all duration-200"
                                                         >
-                                                            <span className="mt-1 flex-shrink-0">
+                                                            <span className="flex-shrink-0 mt-1">
                                                                 <Flag size={16} className="text-cyan-500" />
                                                             </span>
                                                             <span className="text-base leading-relaxed">{text}</span>
@@ -204,6 +203,5 @@ export default function Industry() {
                     </div>
                 </div>
             </main>
-        </ProtectedRoute>
     );
 }
